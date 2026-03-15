@@ -2,6 +2,7 @@
 
 import argparse
 import logging
+import shutil
 import sys
 import tempfile
 from datetime import datetime
