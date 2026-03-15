@@ -161,6 +161,18 @@ def cmd_process(args: argparse.Namespace, config: Config, db: Database) -> None:
 
     dest_override = getattr(args, "dest", None)
     process_batch(pdf_path, config, db, dry_run=args.dry_run, dest_override=dest_override)
+    
+    # Move original to Processed folder (unless dry run)
+    if not args.dry_run and pdf_path.exists():
+        processed_dir = config.paths.processed
+        processed_dir.mkdir(parents=True, exist_ok=True)
+        
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        dest_name = f"{timestamp}_{pdf_path.name}"
+        dest_path = processed_dir / dest_name
+        
+        shutil.move(str(pdf_path), str(dest_path))
+        logger.info(f"Original moved to: {dest_path}")
 
 
 def cmd_watch(args: argparse.Namespace, config: Config, db: Database) -> None:
