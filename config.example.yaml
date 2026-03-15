@@ -1,0 +1,64 @@
+# docsplit configuration
+# Copy to ~/.config/docsplit/config.yaml and edit paths
+
+paths:
+  # Inbox folder where scanner saves batch PDFs
+  inbox: /Volumes/DataDrive/Archive/Inbox-scans
+  
+  # Root of the archive (documents filed into YYYY/MM/ subdirectories)
+  archive: /Volumes/DataDrive/Archive
+  
+  # Processed originals go here
+  processed: /Volumes/DataDrive/Archive/Processed
+  
+  # Failed documents quarantined here for manual review
+  quarantine: /Volumes/DataDrive/Archive/Quarantine
+  
+  # SQLite database for tracking
+  database: /Volumes/DataDrive/Archive/.docsplit.db
+
+# OCR settings
+ocr:
+  dpi: 150                # Resolution for PDF->image conversion
+  language: eng           # Tesseract language code
+  max_pages: 2            # How many pages to OCR for metadata extraction
+  preprocessing: true     # Enable image preprocessing
+  deskew: true            # Correct page rotation
+  sharpen: true           # Sharpen text for better OCR
+  contrast: true          # Enhance contrast
+  denoise: false          # Remove noise (slow, usually not needed)
+
+# LLM metadata extraction
+metadata:
+  model: mistral          # Ollama model name
+  temperature: 0.1        # Lower = more consistent
+
+# Separator detection
+separator:
+  text: DOCPROC_SEP       # Text to detect on separator pages
+  fuzzy_threshold: 85     # Fuzzy match threshold (0-100)
+
+# Watch mode
+watch:
+  interval: 5             # Seconds between inbox checks
+  stability_check: true   # Wait for file size to stabilize before processing
+
+# Archive routing rules (optional)
+# Documents matching these rules will be filed to custom paths
+# Use {year} and {month} in path templates
+# Use {tax_form_id}, {vendor}, {year}, {month}, {type} in naming templates
+archive_rules:
+  # Example: File all tax forms to tax-documents folder with custom naming
+  - doc_type: Tax_Form
+    path: "{year}/tax-documents"
+    naming_template: "{tax_form_id}-{vendor}.pdf"
+  
+  # Example: File medical receipts to medical folder
+  # - doc_type: Receipt
+  #   vendor_contains: "Medical"
+  #   path: "{year}/medical"
+  
+  # Example: File all bills from ComEd to utilities folder
+  # - doc_type: Bill
+  #   vendor_contains: "ComEd"
+  #   path: "{year}/utilities"
